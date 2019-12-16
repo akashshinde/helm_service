@@ -1,7 +1,7 @@
 package main
 
-import "helm_service/helm_actions"
+import "helm_service/server"
 
 func main() {
-	helm_actions.ListReleases()
+	server.Routes()
 }
