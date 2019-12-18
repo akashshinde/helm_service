@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func Routes() {
+func Start() {
 	r := gin.Default()
 
 	r.GET("/charts", func(context *gin.Context) {
@@ -18,14 +18,45 @@ func Routes() {
 	})
 
 	r.POST("/install", func(context *gin.Context) {
+		ns := context.Query("namespace")
 		name := context.Query("name")
 		chart := context.Query("url")
-		ns := context.Query("namespace")
 		release, err := helm_actions.InstallChart(ns, name, chart)
 		if err != nil {
 			context.AbortWithError(http.StatusBadRequest, err)
 		}
 		context.JSON(http.StatusOK, release)
+	})
+
+	r.GET("/template", func(context *gin.Context) {
+		name := context.Query("name")
+		chart := context.Query("url")
+		release, err := helm_actions.RenderManifests(name, chart)
+		if err != nil {
+			context.AbortWithError(http.StatusBadRequest, err)
+		}
+		context.JSON(http.StatusOK, release)
+	})
+
+	r.PUT("/upgrade", func(context *gin.Context) {
+		ns := context.Query("namespace")
+		name := context.Query("name")
+		chart := context.Query("url")
+		release, err := helm_actions.UpgradeRelease(ns, name, chart)
+		if err != nil {
+			context.AbortWithError(http.StatusBadRequest, err)
+		}
+		context.JSON(http.StatusOK, release)
+	})
+
+	r.PUT("/rollback", func(context *gin.Context) {
+		name := context.Query("name")
+		version := context.Query("version")
+		res,err := helm_actions.RollbackRelease(name, version)
+		if err != nil {
+			context.AbortWithError(http.StatusBadRequest, err)
+		}
+		context.JSON(http.StatusOK, res)
 	})
 
 	r.Run()

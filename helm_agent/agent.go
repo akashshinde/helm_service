@@ -7,15 +7,15 @@ import (
 	"helm.sh/helm/v3/pkg/storage"
 	"helm.sh/helm/v3/pkg/storage/driver"
 	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/rest"
+	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/klog"
 )
 
 var settings = cli.New()
 
 func GetActionConfigurations() *action.Configuration {
-	//config, _ := clientcmd.BuildConfigFromFlags("", "/Users/akash/kubeconfig")
-	config, _ := rest.InClusterConfig()
+	config, _ := clientcmd.BuildConfigFromFlags("", "/Users/akash/kubeconfig")
+	//config, _ := rest.InClusterConfig()
 	// creates the clientset
 	clientset, _ := kubernetes.NewForConfig(config)
 	store := createStorage("akash-helm-server", clientset)
