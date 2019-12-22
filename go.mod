@@ -1,4 +1,4 @@
-module helm_service
+module github.cpm/akashshinde/helm_service
 
 go 1.13
 
